@@ -1,4 +1,4 @@
-package com.trackfox.app.core.data.entity
+package com.trackfox.app.entity
 
 import java.time.LocalDate
 
