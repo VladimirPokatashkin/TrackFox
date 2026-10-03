@@ -3,14 +3,14 @@ package com.trackfox.app.data.parser
 import com.garmin.fit.Decode
 import com.garmin.fit.MesgBroadcaster
 import com.garmin.fit.SessionMesgListener
-import com.trackfox.app.entity.Training
+import com.trackfox.app.model.entity.TrainingData
 import java.io.InputStream
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.Optional
 
 
-fun parseFIT(inputStream : InputStream) : Training {
+fun parseFIT(inputStream : InputStream) : TrainingData {
     val decode = Decode()
     val broadcaster = MesgBroadcaster(decode)
 
@@ -28,5 +28,5 @@ fun parseFIT(inputStream : InputStream) : Training {
 
     inputStream.use { decode.read(it, broadcaster, broadcaster) }
 
-    return Training(date.get(), duration.get(), averageHR.get(), maxHR.get())
+    return TrainingData(date.get(), duration.get(), averageHR.get(), maxHR.get())
 }
