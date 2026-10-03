@@ -1,4 +1,4 @@
-package com.trackfox.app.core.math
+package com.trackfox.app.math
 
 import java.time.LocalDate
 

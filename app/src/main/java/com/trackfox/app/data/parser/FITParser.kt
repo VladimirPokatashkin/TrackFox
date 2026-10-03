@@ -1,9 +1,9 @@
-package com.trackfox.app.core.data.parser
+package com.trackfox.app.data.parser
 
 import com.garmin.fit.Decode
 import com.garmin.fit.MesgBroadcaster
 import com.garmin.fit.SessionMesgListener
-import com.trackfox.app.core.data.entity.Training
+import com.trackfox.app.entity.Training
 import java.io.InputStream
 import java.time.LocalDate
 import java.time.ZoneId
