@@ -1,6 +1,6 @@
 package com.trackfox.app.math
 
-import com.trackfox.app.model.entity.TSBPoint
+import com.trackfox.app.entity.TSBPoint
 import java.time.LocalDate
 import kotlin.math.exp
 

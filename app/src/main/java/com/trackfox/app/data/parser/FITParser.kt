@@ -3,7 +3,7 @@ package com.trackfox.app.data.parser
 import com.garmin.fit.Decode
 import com.garmin.fit.MesgBroadcaster
 import com.garmin.fit.SessionMesgListener
-import com.trackfox.app.model.entity.TrainingData
+import com.trackfox.app.entity.TrainingData
 import java.io.InputStream
 import java.time.LocalDate
 import java.time.ZoneId
