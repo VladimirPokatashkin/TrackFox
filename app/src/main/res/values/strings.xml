@@ -53,6 +53,7 @@
     <string name="passwordLabel">пароль</string>
     <string name="register">зарегистрироваться</string>
     <string name="repeatPasword">повторите пароль</string>
+    <string name="login">войти</string>
 
 
 </resources>

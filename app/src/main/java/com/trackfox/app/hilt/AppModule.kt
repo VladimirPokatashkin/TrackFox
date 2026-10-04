@@ -5,6 +5,7 @@ import com.trackfox.app.data.room.Database
 import com.trackfox.app.data.room.dao.TrainingDao
 import com.trackfox.app.data.room.dao.UserDao
 import com.trackfox.app.model.service.UserSessionManager
+import com.trackfox.app.service.AuthService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -32,4 +33,8 @@ object AppModule {
     @Provides
     fun provideUserSessionManager(@ApplicationContext context : Context) : UserSessionManager =
         UserSessionManager(context)
+
+    @Provides
+    fun provideAuthService(userDao: UserDao, userSessionManager: UserSessionManager) : AuthService
+            = AuthService(userDao, userSessionManager)
 }

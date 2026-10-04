@@ -2,10 +2,7 @@ package com.trackfox.app.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.trackfox.app.data.entity.User
-import com.trackfox.app.data.room.dao.UserDao
-import com.trackfox.app.model.service.UserSessionManager
-import com.trackfox.app.model.service.hashPassword
+import com.trackfox.app.service.AuthService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,8 +19,7 @@ data class RegistrationUIState(
 
 @HiltViewModel
 class RegistrationViewModel @Inject constructor(
-    private val userDao : UserDao,
-    private val userSessionManager: UserSessionManager
+    private val authService: AuthService
 ) : ViewModel() {
 
     private val innerUIState = MutableStateFlow(RegistrationUIState())
@@ -57,11 +53,9 @@ class RegistrationViewModel @Inject constructor(
     fun registerUser() {
         viewModelScope.launch {
             with(innerUIState.value) {
-                userDao.insertUser(
-                    User(
-                        name = this.userName,
-                        passwordHash = hashPassword(this.password)
-                    )
+                authService.registerUser(
+                    this.userName,
+                    this.password
                 )
             }
         }
