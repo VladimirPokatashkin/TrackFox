@@ -42,5 +42,17 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
-    <string name="title_activity_add_training">AddTrainingActivity</string>
+    <string name="durationLabel">длительность в минутах</string>
+    <string name="durationPlaceholder">12</string>
+    <string name="averageHRLabel">средний пульс</string>
+    <string name="averageHRPlaceHolder">67</string>
+    <string name="maxHRLabel">максимальный пульс</string>
+    <string name="maxHRPlaceHolder">567</string>
+    <string name="userNameLabel">имя пользователя</string>
+    <string name="userNamePlaceholder">vova_nikitin_chempik</string>
+    <string name="passwordLabel">пароль</string>
+    <string name="register">зарегистрироваться</string>
+    <string name="repeatPasword">повторите пароль</string>
+
+
 </resources>

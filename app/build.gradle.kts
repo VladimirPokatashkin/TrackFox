@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -59,6 +60,10 @@ dependencies {
     implementation("androidx.room:room-ktx:$roomVersion") // поддержка Coroutines и Flow
     ksp("androidx.room:room-compiler:$roomVersion")
     implementation(libs.material)
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation("org.mindrot:jbcrypt:0.4")
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
