@@ -5,7 +5,7 @@ import com.trackfox.app.data.entity.User
 
 @Dao
 interface UserDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertUser(user : User)
 
     @Delete(entity = User::class)
