@@ -2,8 +2,6 @@ package com.trackfox.app.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.trackfox.app.data.room.dao.UserDao
-import com.trackfox.app.model.service.UserSessionManager
 import com.trackfox.app.service.AuthService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +27,8 @@ class LoginViewModel @Inject constructor(
     fun onUserNameChanged(newUserName : String) {
         innerUIState.update {
             it.copy(
-                userName = newUserName
+                userName = newUserName,
+                isValid = it.userName.isNotEmpty() && it.password.isNotEmpty()
             )
         }
     }

@@ -5,15 +5,6 @@ import java.time.LocalDate
 
 @Entity(
     "trainings",
-    foreignKeys = [
-        ForeignKey(
-            User::class,
-            parentColumns = ["id"],
-            childColumns = ["userId"],
-            onDelete = ForeignKey.CASCADE,
-            onUpdate = ForeignKey.CASCADE
-        )
-    ],
     indices = [Index(value = ["userId"])]
 )
 data class TrainingDB(
