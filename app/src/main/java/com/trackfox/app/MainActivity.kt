@@ -8,11 +8,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.trackfox.app.model.service.UserSessionManager
+import com.trackfox.app.service.UserSessionManager
 import com.trackfox.app.screen.AddTrainingScreen
 import com.trackfox.app.screen.LoginScreen
 import com.trackfox.app.screen.MainScreen
@@ -46,10 +45,12 @@ class MainActivity : ComponentActivity() {
 
                         composable("login") {
                             LoginScreen { navController.navigate("register") }
+                            navController.navigate("home")
                         }
 
                         composable("register") {
                             RegistrationScreen()
+                            navController.navigate("home")
                         }
                     }
                 }
