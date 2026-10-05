@@ -2,11 +2,8 @@ package com.trackfox.app.data.dto
 
 import kotlinx.serialization.Serializable
 
-
 @Serializable
-data class AuthResponse(
-    val id : Long,
-    val name : String,
+data class RefreshTokensResponse(
     val accessToken : String,
     val refreshToken : String
 )

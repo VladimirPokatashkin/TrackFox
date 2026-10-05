@@ -4,7 +4,7 @@ import android.content.Context
 import com.trackfox.app.data.api.APIService
 import com.trackfox.app.data.room.Database
 import com.trackfox.app.data.room.dao.TrainingDao
-import com.trackfox.app.service.AuthService
+import com.trackfox.app.service.AuthorizationService
 import com.trackfox.app.service.UserSessionManager
 import dagger.Module
 import dagger.Provides
@@ -32,6 +32,6 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideAuthService(userSessionManager: UserSessionManager, apiService: APIService) : AuthService =
-        AuthService(userSessionManager, apiService)
+    fun provideAuthService(userSessionManager: UserSessionManager, apiService: APIService) : AuthorizationService =
+        AuthorizationService(userSessionManager, apiService)
 }
