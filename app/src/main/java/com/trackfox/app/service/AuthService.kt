@@ -1,48 +1,49 @@
 package com.trackfox.app.service
 
-import com.trackfox.app.data.entity.User
-import com.trackfox.app.data.room.dao.UserDao
-import com.trackfox.app.exception.UserExistsException
-import com.trackfox.app.exception.UserNotFoundException
-import com.trackfox.app.exception.WrongPasswordException
-import com.trackfox.app.model.service.UserSessionManager
-import com.trackfox.app.model.service.hashPassword
-import com.trackfox.app.model.service.isCorrectPassword
+import com.trackfox.app.data.api.APIService
+import com.trackfox.app.data.dto.AuthRequest
+import com.trackfox.app.data.dto.AuthResponse
+import com.trackfox.app.network.NetworkResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import retrofit2.Response
 import javax.inject.Inject
 
 class AuthService @Inject constructor(
-    private val userDao : UserDao,
-    private val userSessionManager: UserSessionManager
+    private val userSessionManager: UserSessionManager,
+    private val apiService: APIService
 ) {
-    suspend fun registerUser(userName : String, password : String) {
-        withContext(Dispatchers.IO) {
-            if (userDao.getUserByName(userName) != null) {
-                throw UserExistsException("user with user name '$userName' already exists.")
+
+    private suspend fun handle(response: Response<AuthResponse>, userName : String) : NetworkResult<AuthResponse> =
+        if (response.isSuccessful) {
+            val body = response.body()
+
+            if (body != null) {
+                userSessionManager.setUser(body.id, userName, body.token)
+                NetworkResult.Success(body)
+            } else {
+                //TODO: error dto handling
+                NetworkResult.APIError(response.code())
             }
-
-            userSessionManager.setCurrentUserId(
-                userDao.insertUser(
-                    User(
-                        name = userName,
-                        passwordHash = hashPassword(password)
-                    )
-                )
-            )
+        } else {
+            NetworkResult.APIError(response.code())
         }
-    }
 
-    suspend fun login(userName: String, password: String) {
+    suspend fun registerUser(userName : String, password : String) : NetworkResult<AuthResponse> =
         withContext(Dispatchers.IO) {
-            val user = userDao.getUserByName(userName)
-                ?: throw UserNotFoundException("user '$userName' not found.")
-
-            if (!isCorrectPassword(password, user.passwordHash)) {
-                throw WrongPasswordException("invalid password for user '$userName'.")
+            try {
+                handle(apiService.register(AuthRequest(userName, password)), userName)
+            } catch (ex : Exception) {
+                NetworkResult.ConnectionError(ex)
             }
-
-            userSessionManager.setCurrentUserId(user.id)
         }
-    }
+
+    suspend fun login(userName: String, password: String) : NetworkResult<AuthResponse> =
+        withContext(Dispatchers.IO) {
+            try {
+                handle(apiService.login(AuthRequest(userName, password)), userName)
+            } catch (ex : Exception) {
+                NetworkResult.ConnectionError(ex)
+            }
+        }
 }

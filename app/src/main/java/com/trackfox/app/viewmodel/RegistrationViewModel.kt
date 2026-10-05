@@ -17,6 +17,7 @@ data class RegistrationUIState(
     val isValid : Boolean = false
 )
 
+//TODO: authorization errors handling
 @HiltViewModel
 class RegistrationViewModel @Inject constructor(
     private val authService: AuthService
