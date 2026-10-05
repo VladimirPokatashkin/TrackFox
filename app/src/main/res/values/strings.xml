@@ -48,6 +48,8 @@
     <string name="averageHRPlaceHolder">67</string>
     <string name="maxHRLabel">максимальный пульс</string>
     <string name="maxHRPlaceHolder">567</string>
+    <string name="emailLabel">почта</string>
+    <string name="emailPlaceholder">vovanikitinnasledie@mail.aboba</string>
     <string name="userNameLabel">имя пользователя</string>
     <string name="userNamePlaceholder">vova_nikitin_chempik</string>
     <string name="passwordLabel">пароль</string>

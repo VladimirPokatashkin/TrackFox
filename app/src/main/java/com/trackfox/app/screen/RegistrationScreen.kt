@@ -33,7 +33,16 @@ fun RegistrationScreen(viewModel : RegistrationViewModel = hiltViewModel()) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         OutlinedTextField(
-            value = uiState.value.userName,
+            value = uiState.value.email,
+            onValueChange = { viewModel.onEmailChanged(it) },
+            label = { Text(text = stringResource(R.string.emailLabel)) },
+            placeholder = { Text(text = stringResource(R.string.emailPlaceholder)) },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        OutlinedTextField(
+            value = uiState.value.name,
             onValueChange = { viewModel.onUserNameChanged(it) },
             label = { Text(text = stringResource(R.string.userNameLabel)) },
             placeholder = { Text(text = stringResource(R.string.userNamePlaceholder)) },

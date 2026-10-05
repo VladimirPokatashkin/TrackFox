@@ -2,7 +2,7 @@ package com.trackfox.app.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.trackfox.app.service.AuthService
+import com.trackfox.app.service.AuthorizationService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,7 +18,7 @@ data class LoginUIState(
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val authService: AuthService
+    private val authorizationService: AuthorizationService
 ) : ViewModel() {
 
     private val innerUIState = MutableStateFlow(LoginUIState())
@@ -45,7 +45,7 @@ class LoginViewModel @Inject constructor(
     fun login() {
         viewModelScope.launch {
             with(innerUIState.value) {
-                authService.login(
+                authorizationService.login(
                     this.userName,
                     this.password
                 )
