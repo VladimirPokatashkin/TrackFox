@@ -54,6 +54,8 @@
     <string name="register">зарегистрироваться</string>
     <string name="repeatPasword">повторите пароль</string>
     <string name="login">войти</string>
+    <string name="back">назад</string>
+    <string name="save">сохранить</string>
 
 
 </resources>
