@@ -1,12 +1,11 @@
-package com.trackfox.app.data.dto
+package com.trackfox.app.server.dto
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class AthleteDTO(
+data class AthleteResponse(
     val id : Long,
     val userId : Long,
     val gender: String,
-    val restHR : Int,
-    val lactateCoef : Double
+    val restHR : Int
 )
