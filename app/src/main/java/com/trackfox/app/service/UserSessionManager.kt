@@ -10,7 +10,7 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.trackfox.app.data.api.APIService
+import com.trackfox.app.server.service.RequestService
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -23,7 +23,7 @@ import javax.inject.Inject
 private val Context.dataStore : DataStore<Preferences> by preferencesDataStore("user_session_prefs")
 class UserSessionManager @Inject constructor(
     @ApplicationContext private val context : Context,
-    private val apiService: APIService) {
+    private val requestService: RequestService) {
 
     private val prefs : SharedPreferences = context.getSharedPreferences("user_session_prefs",
         Context.MODE_PRIVATE)
@@ -99,7 +99,7 @@ class UserSessionManager @Inject constructor(
         } ?: return ""
 
         return try {
-            val response = runBlocking { apiService.refreshTokens(currentRefreshToken) }
+            val response = runBlocking { requestService.refreshTokens(currentRefreshToken) }
 
             if (response.isSuccessful && response.body() != null) {
                 val refreshToken = response.body()?.refreshToken ?: return ""

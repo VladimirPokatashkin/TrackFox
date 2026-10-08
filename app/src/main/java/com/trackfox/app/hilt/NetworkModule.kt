@@ -1,7 +1,7 @@
 package com.trackfox.app.hilt
 
-import com.trackfox.app.data.api.APIService
-import com.trackfox.app.service.TokenAuthenticator
+import com.trackfox.app.server.service.RequestService
+import com.trackfox.app.server.service.TokenAuthenticator
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,8 +15,8 @@ import javax.inject.Singleton
 object NetworkModule {
     @Provides
     @Singleton
-    fun provideApiService(retrofit: Retrofit) : APIService =
-        retrofit.create(APIService::class.java)
+    fun provideApiService(retrofit: Retrofit) : RequestService =
+        retrofit.create(RequestService::class.java)
 
     @Provides
     @Singleton

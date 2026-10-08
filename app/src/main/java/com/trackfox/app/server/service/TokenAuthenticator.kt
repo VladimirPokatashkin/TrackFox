@@ -1,5 +1,6 @@
-package com.trackfox.app.service
+package com.trackfox.app.server.service
 
+import com.trackfox.app.service.UserSessionManager
 import okhttp3.Authenticator
 import okhttp3.Request
 import okhttp3.Response
