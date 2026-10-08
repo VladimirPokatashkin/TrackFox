@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,12 +18,23 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.trackfox.app.R
+import com.trackfox.app.viewmodel.LoginStatus
 import com.trackfox.app.viewmodel.LoginViewModel
 
 @Composable
-fun LoginScreen(viewModel: LoginViewModel = hiltViewModel(), onNavigateToRegister : () -> Unit) {
+fun LoginScreen(
+    viewModel: LoginViewModel = hiltViewModel(),
+    onNavigateToRegister : () -> Unit,
+    onSuccess : () -> Unit
+) {
     val uiState = viewModel.outerUIState.collectAsState()
     var placeholder by remember { mutableStateOf("") }
+
+    LaunchedEffect(uiState.value.status) {
+        if (uiState.value.isSuccess) {
+            onSuccess()
+        }
+    }
 
     Column(
         modifier = Modifier.fillMaxSize().padding(24.dp),
@@ -35,6 +47,7 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel(), onNavigateToRegiste
             label = { Text(text = stringResource(R.string.userNameLabel)) },
             placeholder = { Text(text = stringResource(R.string.userNamePlaceholder)) },
             singleLine = true,
+            enabled = !uiState.value.isLoading,
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -46,12 +59,13 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel(), onNavigateToRegiste
             },
             label = { Text(text = stringResource(R.string.passwordLabel)) },
             singleLine = true,
+            enabled = !uiState.value.isLoading,
             modifier = Modifier.fillMaxWidth()
         )
 
         Button(
             onClick = viewModel::login,
-            enabled = uiState.value.isValid,
+            enabled = uiState.value.isValid && !uiState.value.isLoading,
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = stringResource(R.string.login))
@@ -59,9 +73,18 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel(), onNavigateToRegiste
 
         Button(
             onClick = onNavigateToRegister,
+            enabled = !uiState.value.isLoading,
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = stringResource(R.string.register))
+        }
+
+        if (uiState.value.isError) {
+            Text(
+                text = (uiState.value.status as LoginStatus.Error).message,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(top = 8.dp)
+            )
         }
     }
 }
