@@ -20,12 +20,12 @@ sealed interface LoginStatus {
 }
 
 data class LoginUIState(
-    val userName : String = "",
+    val email : String = "",
     val password : String = "",
-    var status : LoginStatus = LoginStatus.Begin
+    val status : LoginStatus = LoginStatus.Begin
 ) {
     val isValid : Boolean
-        get() = userName.isNotEmpty() && password.isNotEmpty()
+        get() = email.isNotEmpty() && password.isNotEmpty()
 
     val isLoading : Boolean
         get() = status is LoginStatus.Loading
@@ -45,10 +45,10 @@ class LoginViewModel @Inject constructor(
     private val innerUIState = MutableStateFlow(LoginUIState())
     val outerUIState = innerUIState.asStateFlow()
 
-    fun onUserNameChanged(newUserName : String) {
+    fun onEmailChanged(newEmail : String) {
         innerUIState.update {
             it.copy(
-                userName = newUserName
+                email = newEmail
             )
         }
     }
@@ -65,18 +65,20 @@ class LoginViewModel @Inject constructor(
         if (!innerUIState.value.isValid) return
 
         viewModelScope.launch {
-            innerUIState.value.status = LoginStatus.Loading
+            innerUIState.update { it.copy(status = LoginStatus.Loading) }
 
-            with(innerUIState.value) {
+            with(innerUIState) {
 
-               status = when (val result = authorizationService.login(
-                    this.userName,
-                    this.password
+               val newStatus = when (val result = authorizationService.login(
+                    this.value.email,
+                    this.value.password
                 )) {
                     is NetworkResult.Success -> LoginStatus.Success
                     is NetworkResult.APIError -> LoginStatus.Error(result.error?.message ?: "unknown error. minus vibe((")
                     is NetworkResult.ConnectionError -> LoginStatus.Error("connection error. minus vibe((")
                 }
+
+                this.update { it.copy(status = newStatus) }
             }
         }
     }
