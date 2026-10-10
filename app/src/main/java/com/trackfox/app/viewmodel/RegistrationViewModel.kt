@@ -22,7 +22,7 @@ data class RegistrationUIState(
     val name : String = "",
     val password : String = "",
     val repeatedPassword : String = "",
-    var status : RegistrationStatus = RegistrationStatus.Begin
+    val status : RegistrationStatus = RegistrationStatus.Begin
 ) {
     val isValid : Boolean
         get() = email.isNotEmpty() && name.isNotEmpty() && password.isNotEmpty() && password == repeatedPassword
@@ -79,18 +79,20 @@ class RegistrationViewModel @Inject constructor(
         if (!innerUIState.value.isValid) return
 
         viewModelScope.launch {
-            innerUIState.value.status = RegistrationStatus.Loading
+            innerUIState.update { it.copy(status = RegistrationStatus.Loading) }
 
-            with(innerUIState.value) {
-                status = when(val result = authorizationService.registerUser(
-                    this.email,
-                    this.name,
-                    this.password
+            with(innerUIState) {
+                val newStatus = when(val result = authorizationService.registerUser(
+                    this.value.email,
+                    this.value.name,
+                    this.value.password
                 )) {
                     is NetworkResult.Success -> RegistrationStatus.Success
                     is NetworkResult.APIError -> RegistrationStatus.Error(result.error?.message ?: "unknown error. minus vibe((")
                     is NetworkResult.ConnectionError -> RegistrationStatus.Error("connection error. minus vibe((")
                 }
+
+                this.update { it.copy(status = newStatus) }
             }
         }
     }

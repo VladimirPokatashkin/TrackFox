@@ -19,16 +19,21 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import com.trackfox.app.R
-import com.trackfox.app.viewmodel.LoginStatus
 import com.trackfox.app.viewmodel.RegistrationStatus
 import com.trackfox.app.viewmodel.RegistrationViewModel
 
 @Composable
 fun RegistrationScreen(
-    viewModel : RegistrationViewModel = hiltViewModel(),
+    viewModel : RegistrationViewModel = androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel(
+        checkNotNull(LocalViewModelStoreOwner.current) {
+                "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
+            },
+        null
+    ),
     onSuccess : () -> Unit
 ) {
     val uiState = viewModel.outerUIState.collectAsState()
@@ -66,11 +71,9 @@ fun RegistrationScreen(
         )
 
         OutlinedTextField(
-            value = placeholder,
-            onValueChange = {
-                placeholder = "*".repeat(it.length)
-                viewModel.onPasswordChanged(it)
-            },
+            value = uiState.value.password,
+            onValueChange = { viewModel.onPasswordChanged(it) },
+            visualTransformation = PasswordVisualTransformation(),
             label = { Text(text = stringResource(R.string.passwordLabel)) },
             singleLine = true,
             enabled = !uiState.value.isLoading,
@@ -80,11 +83,9 @@ fun RegistrationScreen(
         placeholder = ""
 
         OutlinedTextField(
-            value = placeholder,
-            onValueChange = {
-                placeholder = "*".repeat(it.length)
-                viewModel.onRepeatedPasswordChanged(it)
-            },
+            value = uiState.value.repeatedPassword,
+            onValueChange = { viewModel.onRepeatedPasswordChanged(it) },
+            visualTransformation = PasswordVisualTransformation(),
             label = { Text(text = stringResource(R.string.repeatPasword)) },
             singleLine = true,
             enabled = !uiState.value.isLoading,

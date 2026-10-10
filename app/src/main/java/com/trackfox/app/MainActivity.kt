@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -17,7 +19,11 @@ import com.trackfox.app.screen.LoginScreen
 import com.trackfox.app.screen.MainScreen
 import com.trackfox.app.screen.RegistrationScreen
 import com.trackfox.app.ui.theme.TrackFoxTheme
+import com.trackfox.app.viewmodel.AddTrainingViewModel
+import com.trackfox.app.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -27,12 +33,17 @@ class MainActivity : ComponentActivity() {
         setContent {
             TrackFoxTheme {
                 val navController = rememberNavController()
-                val sessionManager = UserSessionManager(application)
+                val viewModel : MainViewModel = hiltViewModel(
+                    checkNotNull(LocalViewModelStoreOwner.current) {
+                        "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
+                    },
+                    null
+                )
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     NavHost(
                         navController = navController,
-                        startDestination = if (sessionManager.getCurrentUserId() != -1L) "home" else "register",
+                        startDestination = if (viewModel.currentUserId != -1L) "home" else "login",
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         composable("home") {
@@ -44,13 +55,14 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable("login") {
-                            LoginScreen { navController.navigate("register") }
-                            navController.navigate("home")
+                            LoginScreen(
+                                onNavigateToRegister = { navController.navigate("register") },
+                                onSuccess = { navController.navigate("home") }
+                            )
                         }
 
                         composable("register") {
-                            RegistrationScreen()
-                            navController.navigate("home")
+                            RegistrationScreen { navController.navigate("home") }
                         }
                     }
                 }
