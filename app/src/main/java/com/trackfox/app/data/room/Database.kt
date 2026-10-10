@@ -3,10 +3,12 @@ package com.trackfox.app.data.room
 import android.content.Context
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.trackfox.app.data.entity.*
 import com.trackfox.app.data.room.dao.TrainingDao
 
 @androidx.room.Database(entities = [TrainingDB::class, Athlete::class], version = 1)
+@TypeConverters(InstantConverter::class)
 abstract class Database : RoomDatabase() {
     abstract fun trainingDao() : TrainingDao
 
