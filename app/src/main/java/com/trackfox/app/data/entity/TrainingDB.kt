@@ -13,6 +13,7 @@ data class TrainingDB(
     @PrimaryKey(autoGenerate = true)
     val id : Long = 0,
     val userId : Long,
+    var name : String,
     val date : Instant,
     val duration : Int,
     val averageHR : Int,
