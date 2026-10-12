@@ -1,10 +1,12 @@
 package com.trackfox.app.hilt
 
 import android.content.Context
-import com.trackfox.app.data.api.APIService
 import com.trackfox.app.data.room.Database
 import com.trackfox.app.data.room.dao.TrainingDao
-import com.trackfox.app.service.AuthorizationService
+import com.trackfox.app.network.PublicClient
+import com.trackfox.app.server.service.AuthRequestService
+import com.trackfox.app.server.service.AuthorizationService
+import com.trackfox.app.server.service.RefreshRequestService
 import com.trackfox.app.service.UserSessionManager
 import dagger.Module
 import dagger.Provides
@@ -27,11 +29,17 @@ object AppModule {
         database.trainingDao()
 
     @Provides
-    fun provideUserSessionManager(@ApplicationContext context : Context) : UserSessionManager =
-        UserSessionManager(context)
+    fun provideUserSessionManager(
+        @ApplicationContext context : Context,
+        @PublicClient requestService: RefreshRequestService
+    ) : UserSessionManager =
+        UserSessionManager(context, requestService)
 
     @Provides
     @Singleton
-    fun provideAuthService(userSessionManager: UserSessionManager, apiService: APIService) : AuthorizationService =
-        AuthorizationService(userSessionManager, apiService)
+    fun provideAuthService(
+        userSessionManager: UserSessionManager,
+        @PublicClient requestService: AuthRequestService
+    ) : AuthorizationService =
+        AuthorizationService(userSessionManager, requestService)
 }

@@ -1,9 +1,9 @@
-package com.trackfox.app.data.dto
+package com.trackfox.app.server.dto
 
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class LoginRequest(
-    val name : String,
+    val email : String,
     val password : String
 )

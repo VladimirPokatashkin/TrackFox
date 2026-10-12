@@ -1,10 +1,11 @@
-package com.trackfox.app.service
+package com.trackfox.app.server.service
 
-import com.trackfox.app.data.api.APIService
-import com.trackfox.app.data.dto.RegistrationRequest
-import com.trackfox.app.data.dto.AuthResponse
-import com.trackfox.app.data.dto.LoginRequest
+import com.trackfox.app.server.dto.RegistrationRequest
+import com.trackfox.app.server.dto.AuthResponse
+import com.trackfox.app.server.dto.LoginRequest
 import com.trackfox.app.network.NetworkResult
+import com.trackfox.app.network.PublicClient
+import com.trackfox.app.service.UserSessionManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Response
@@ -12,7 +13,7 @@ import javax.inject.Inject
 
 class AuthorizationService @Inject constructor(
     private val userSessionManager: UserSessionManager,
-    private val apiService: APIService
+    @PublicClient private val requestService: AuthRequestService
 ) {
 
     private suspend fun handle(response: Response<AuthResponse>) : NetworkResult<AuthResponse> =
@@ -33,16 +34,16 @@ class AuthorizationService @Inject constructor(
     suspend fun registerUser(email : String, name : String, password : String) : NetworkResult<AuthResponse> =
         withContext(Dispatchers.IO) {
             try {
-                handle(apiService.register(RegistrationRequest(email, name, password)))
+                handle(requestService.register(RegistrationRequest(email, name, password)))
             } catch (ex : Exception) {
                 NetworkResult.ConnectionError(ex)
             }
         }
 
-    suspend fun login(name: String, password: String) : NetworkResult<AuthResponse> =
+    suspend fun login(email: String, password: String) : NetworkResult<AuthResponse> =
         withContext(Dispatchers.IO) {
             try {
-                handle(apiService.login(LoginRequest(name, password)))
+                handle(requestService.login(LoginRequest(email, password)))
             } catch (ex : Exception) {
                 NetworkResult.ConnectionError(ex)
             }

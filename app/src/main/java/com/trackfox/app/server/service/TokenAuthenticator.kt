@@ -1,5 +1,6 @@
-package com.trackfox.app.service
+package com.trackfox.app.server.service
 
+import com.trackfox.app.service.UserSessionManager
 import okhttp3.Authenticator
 import okhttp3.Request
 import okhttp3.Response
@@ -13,10 +14,10 @@ class TokenAuthenticator @Inject constructor(
 
     private fun count(response: Response) : Int {
         var cnt = 0
-        var prior = response.priorResponse()
+        var prior = response.priorResponse
         while (prior != null) {
             cnt++
-            prior = prior.priorResponse()
+            prior = prior.priorResponse
         }
         return cnt
     }
@@ -29,7 +30,7 @@ class TokenAuthenticator @Inject constructor(
         val accessToken = userSessionManager.refreshTokens()
         if (accessToken == "") return null
 
-        return response.request().newBuilder()
+        return response.request.newBuilder()
             .header("Authorization", "Bearer $accessToken")
             .build()
     }

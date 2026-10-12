@@ -1,8 +1,19 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.kotlin.serialization)
+}
+
+val envProperties = Properties().apply {
+    val envFile = rootProject.file(".env")
+    if (envFile.exists()) {
+        load(FileInputStream(envFile))
+    }
 }
 
 android {
@@ -19,6 +30,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val baseUrl = envProperties.getProperty("BASE_URL") ?: "\"http://10.0.2.2:8080/\""
+        buildConfigField("String", "BASE_URL", baseUrl)
     }
 
     buildTypes {
@@ -35,11 +49,11 @@ android {
     buildFeatures {
         compose = true
         viewBinding = true
+        buildConfig = true
     }
 }
 
 dependencies {
-    val roomVersion = "2.6.1"
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.activity.ktx)
@@ -51,21 +65,23 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-    // Source: https://mvnrepository.com/artifact/com.garmin/fit
-    implementation("com.garmin:fit:21.217.0")
+    implementation(libs.fit)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
-    implementation("androidx.navigation:navigation-compose:2.10.2")
-    implementation("androidx.room:room-runtime:$roomVersion")
-    implementation("androidx.room:room-ktx:$roomVersion") // поддержка Coroutines и Flow
-    ksp("androidx.room:room-compiler:$roomVersion")
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.room.runtime)
     implementation(libs.material)
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
-    implementation("org.mindrot:jbcrypt:0.4")
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("androidx.datastore:datastore-preferences:1.1.1")
+    implementation(libs.jbcrypt)
+    implementation(libs.retrofit)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.converter.kotlinx.serialization.v2110)
+    runtimeOnly(libs.converter.kotlinx.serialization)
+    runtimeOnly(libs.hilt.android)
+    ksp(libs.androidx.room.compiler)
+    ksp(libs.hilt.compiler)
+
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
@@ -73,4 +89,8 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
+}
+
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
 }

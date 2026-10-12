@@ -8,7 +8,7 @@ import androidx.room.*
 )
 data class TSBPointDB(
     @PrimaryKey(autoGenerate = true)
-    val id : Long,
+    val id : Long = 0,
     val userId : Long,
     val ctl : Int,
     val atl : Int,
